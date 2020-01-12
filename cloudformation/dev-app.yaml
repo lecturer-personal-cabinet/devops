@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2020-01-12'
+Resources:
+  BeanstalkApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: AWS Elastic Beanstalk Application
+  
+  BeanstalkApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName:
+        Ref: BeanstalkApplication
+      Description: AWS Elastic Beanstalk Application Version
+
+  BeanstalkConfigurationTemplate:
+    Type: AWS::ElsaticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName:
+        Ref: BeanstalkApplication
+      Description: AWS Elastic Beanstalk Configuration Template
+      OptionSettings:
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: '1'
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: '1'
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: LoadBalanced
+        SolutionStackName:  64bit Amazon Linux 2018.03 v2.18.0 running Multi-container Docker 18.09.9-ce (Generic) 
+
+  BeanstalkEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName:
+        Ref: BeanstalkApplication
+      Description: Beanstalk environment
+      TemplateName:
+        Ref: BeanstalkConfigurationTemplate
+      VersionLabel:
+        Ref: BeanstalkApplicationVersion
