@@ -1,14 +1,10 @@
-{
-  "taskDefinition": {
-    "containerDefinitions": [
-      {
-        "name": "frontend",
-        "imageUri": "uladzimirbaklan/lecturer-private-cabinet-frontend:latest"
-      },
-      {
-        "name": "backend",
-        "imageUri": "uladzimirbaklan/lecturer-private-cabinet-backend:latest"
-      }
-    ]
+[
+  {
+    "name": "frontend",
+    "imageUri": "uladzimirbaklan/lecturer-private-cabinet-frontend:latest"
+  },
+  {
+    "name": "backend",
+    "imageUri": "uladzimirbaklan/lecturer-private-cabinet-backend:latest"
   }
-}
+]
