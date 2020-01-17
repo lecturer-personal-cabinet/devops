@@ -3,7 +3,7 @@
     "containerDefinitions": [
       {
         "name": "frontend",
-        "image": "uladzimirbaklan/lecturer-private-cabinet-frontend:latest",
+        "imageUri": "uladzimirbaklan/lecturer-private-cabinet-frontend:latest",
         "portMappings": [
           {
             "protocol": "tcp",
@@ -15,7 +15,7 @@
       },
       {
         "name": "backend",
-        "image": "uladzimirbaklan/lecturer-private-cabinet-backend:latest",
+        "imageUri": "uladzimirbaklan/lecturer-private-cabinet-backend:latest",
         "portMappings": [
           {
             "protocol": "tcp",
