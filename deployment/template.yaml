@@ -144,8 +144,9 @@ Resources:
       LaunchType: EC2
       ServiceName: dev_service
       TaskDefinition: !Ref ECSTaskDefinition
-      DeploymentController:
-        Type: CODE_DEPLOY
+      DeploymentConfiguration:
+        MaximumPercent: 100
+        MinimumHealthyPercent: 0
       LoadBalancers:
         - ContainerName: frontend
           ContainerPort: 3000
