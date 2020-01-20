@@ -126,7 +126,7 @@ Resources:
           Image: uladzimirbaklan/lecturer-private-cabinet-frontend
           Memory: 300
           PortMappings:
-            - ContainerPort: 3000
+            - ContainerPort: 80
               HostPort: 80
         - Name: backend
           Image: uladzimirbaklan/lecturer-private-cabinet-backend
@@ -149,7 +149,7 @@ Resources:
         MinimumHealthyPercent: 0
       LoadBalancers:
         - ContainerName: frontend
-          ContainerPort: 3000
+          ContainerPort: 80
           TargetGroupArn: !Ref TargetGroupPublic
 
   # A security group for the EC2 hosts that will run the containers.
