@@ -10,6 +10,5 @@
   {
     "name": "messages-controller",
     "imageUri": "uladzimirbaklan/lecturer-private-cabinet-messages-controller:latest"
-  },
-
+  }
 ]
