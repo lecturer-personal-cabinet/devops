@@ -4,7 +4,12 @@
     "imageUri": "uladzimirbaklan/lecturer-private-cabinet-frontend:latest"
   },
   {
-    "name": "backend",
+    "name": "api",
     "imageUri": "uladzimirbaklan/lecturer-private-cabinet-backend:latest"
-  }
+  },
+  {
+    "name": "messages-controller",
+    "imageUri": "uladzimirbaklan/lecturer-private-cabinet-messages-controller:latest"
+  },
+
 ]

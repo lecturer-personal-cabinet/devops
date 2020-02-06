@@ -113,8 +113,6 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnetTwo
       RouteTableId: !Ref PublicRouteTable
-
-  # ECS Resources
   ECSCluster:
     Type: AWS::ECS::Cluster
   ECSTaskDefinition:
@@ -128,12 +126,18 @@ Resources:
           PortMappings:
             - ContainerPort: 80
               HostPort: 80
-        - Name: backend
-          Image: uladzimirbaklan/lecturer-private-cabinet-backend
+        - Name: api
+          Image: uladzimirbaklan/lecturer-private-cabinet-api
           Memory: 300
           PortMappings:
-            - ContainerPort: 8080
-              HostPort: 8080
+            - ContainerPort: 9000
+              HostPort: 9000
+        - Name: message-controller
+          Image: uladzimirbaklan/lecturer-private-cabinet-messages-controller
+          Memory: 300
+          PortMappings:
+            - ContainerPort: 9000
+              HostPort: 10000
   ECSService:
     DependsOn:
       - PublicLoadBalancerListener
@@ -151,15 +155,6 @@ Resources:
         - ContainerName: frontend
           ContainerPort: 80
           TargetGroupArn: !Ref TargetGroupPublic
-
-  # A security group for the EC2 hosts that will run the containers.
-  # Two rules, allowing network traffic from a public facing load
-  # balancer and from other hosts in the security group.
-  #
-  # Remove any of the following ingress rules that are not needed.
-  # If you want to make direct requests to a container using its
-  # public IP address you'll need to add a security group rule
-  # to allow traffic from all IP addresses.
   EcsHostSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -179,9 +174,6 @@ Resources:
       GroupId: !Ref 'EcsHostSecurityGroup'
       IpProtocol: -1
       SourceSecurityGroupId: !Ref 'EcsHostSecurityGroup'
-
-  # Autoscaling group. This launches the actual EC2 instances that will register
-  # themselves as members of the cluster, and run the docker containers.
   ECSAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -239,10 +231,6 @@ Resources:
     Properties:
       Path: /
       Roles: [!Ref 'EC2Role']
-
-  # Role for the EC2 hosts. This allows the ECS agent on the EC2 hosts
-  # to communciate with the ECS control plane, as well as download the docker
-  # images from ECR to run on your host.
   EC2Role:
     Type: AWS::IAM::Role
     Properties:
@@ -272,23 +260,13 @@ Resources:
               - 'ecr:BatchGetImage'
               - 'ecr:GetDownloadUrlForLayer'
             Resource: '*'
-
-  # Load balancers for getting traffic to containers.
   # This sample template creates one load balancer:
-  #
-  # - One public load balancer, hosted in public subnets that is accessible
-  #   to the public, and is intended to route traffic to one or more public
-  #   facing services.
-
-  # A public facing load balancer, this is used for accepting traffic from the public
-  # internet and directing it to public facing microservices
   PublicLoadBalancerSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Access to the public facing load balancer
       VpcId: !Ref 'VPC'
       SecurityGroupIngress:
-          # Allow access to ALB from anywhere on the internet
           - CidrIp: 0.0.0.0/0
             IpProtocol: -1
   PublicLoadBalancer:
@@ -299,8 +277,6 @@ Resources:
       - Key: idle_timeout.timeout_seconds
         Value: '30'
       Subnets:
-        # The load balancer is placed into the public subnets, so that traffic
-        # from the internet can reach the load balancer directly via the internet gateway
         - !Ref PublicSubnetOne
         - !Ref PublicSubnetTwo
       SecurityGroups: [!Ref 'PublicLoadBalancerSG']
@@ -325,10 +301,6 @@ Resources:
       Port: 80
       Protocol: HTTP
 
-  # This is an IAM role which authorizes ECS to manage resources on your
-  # account on your behalf, such as updating your load balancer with the
-  # details of where your containers are, so that traffic can reach your
-  # containers.
   ECSRole:
     Type: AWS::IAM::Role
     Properties:
@@ -345,8 +317,6 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-              # Rules which allow ECS to attach network interfaces to instances
-              # on your behalf in order for awsvpc networking mode to work right
               - 'ec2:AttachNetworkInterface'
               - 'ec2:CreateNetworkInterface'
               - 'ec2:CreateNetworkInterfacePermission'
@@ -355,8 +325,6 @@ Resources:
               - 'ec2:Describe*'
               - 'ec2:DetachNetworkInterface'
 
-              # Rules which allow ECS to update load balancers on your behalf
-              # with the information sabout how to send traffic to your containers
               - 'elasticloadbalancing:DeregisterInstancesFromLoadBalancer'
               - 'elasticloadbalancing:DeregisterTargets'
               - 'elasticloadbalancing:Describe*'
@@ -377,27 +345,7 @@ Resources:
         Version: '2012-10-17'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole
-  # Code Deploy
-#  CodeDeployApplication:
-#    Type: AWS::CodeDeploy::Application
-#    Properties:
-#      ApplicationName: "lpc-dev-application"
-#      ComputePlatform: ECS
-#  DeploymentGroup:
-#    Type: AWS::CodeDeploy::DeploymentGroup
-#    Properties:
-#      DeploymentGroupName: LPCDeploymentGroup
-#      ApplicationName: !Ref CodeDeployApplication
-#      AutoScalingGroups:
-#        - !Ref ECSAutoScalingGroup
-#      Deployment:
-#        IgnoreApplicationStopFailures: true
 
-
-
-# These are the values output by the CloudFormation template. Be careful
-# about changing any of them, because of them are exported with specific
-# names so that the other task related CF templates can use them.
 Outputs:
   ClusterName:
     Description: The name of the ECS cluster
