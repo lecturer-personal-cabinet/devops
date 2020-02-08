@@ -8,7 +8,7 @@
     "imageUri": "uladzimirbaklan/lecturer-private-cabinet-backend:latest"
   },
   {
-    "name": "messages-controller",
+    "name": "message-controller",
     "imageUri": "uladzimirbaklan/lecturer-private-cabinet-messages-controller:latest"
   }
 ]
