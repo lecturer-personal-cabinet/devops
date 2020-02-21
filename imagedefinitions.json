@@ -5,7 +5,7 @@
   },
   {
     "name": "api",
-    "imageUri": "uladzimirbaklan/lecturer-private-cabinet-api:latest"
+    "imageUri": "uladzimirbaklan/lecturer-private-cabinet-backend:latest"
   },
   {
     "name": "message-controller",

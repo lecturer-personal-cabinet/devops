@@ -126,8 +126,8 @@ Resources:
           PortMappings:
             - ContainerPort: 80
               HostPort: 80
-        - Name: api
-          Image: uladzimirbaklan/lecturer-private-cabinet-api
+        - Name: backend
+          Image: uladzimirbaklan/lecturer-private-cabinet-backend
           Memory: 300
           PortMappings:
             - ContainerPort: 9000
