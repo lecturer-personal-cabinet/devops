@@ -130,8 +130,8 @@ Resources:
           Image: uladzimirbaklan/lecturer-private-cabinet-backend
           Memory: 300
           PortMappings:
-            - ContainerPort: 9000
-              HostPort: 9000
+            - ContainerPort: 8080
+              HostPort: 8080
         - Name: message-controller
           Image: uladzimirbaklan/lecturer-private-cabinet-messages-controller
           Memory: 300
